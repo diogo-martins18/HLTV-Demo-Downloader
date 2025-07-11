@@ -8,8 +8,8 @@ import os
 
 def main():
     print("*** HLTV DEMO DOWNLOADER ***")
-    link = input("Enter the link: ")
-    folder_path = input("Enter the path: ")
+    link = input("Enter the player match link: ")
+    folder_path = input("Enter the download folder path: ")
 
 
     # Get an array with links to the matchpages
