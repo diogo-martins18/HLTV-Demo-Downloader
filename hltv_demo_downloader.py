@@ -3,21 +3,23 @@ from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from urllib.parse import urlparse
 import time
 import os
 
 def main():
     print("*** HLTV DEMO DOWNLOADER ***")
-    link = input("Enter the player match link: ")
+    stat_page_link = input("Enter the stats page link: ")
     folder_path = input("Enter the download folder path: ")
 
+    if is_valid_url(stat_page_link):
+        match_links = get_matches(stat_page_link, folder_path)
+    else:
+        print("Incorrect link format.")
+        quit()
 
-    # Get an array with links to the matchpages
-    match_links = get_matches(link, folder_path)
-    print(f"Found {len(match_links)} demos.")
-    print("Starting to download...\n")
- 
     # Start downloading all the demos 1 by 1
+    print("Starting to download...\n")
     for index, link in enumerate(match_links, start=1):
         progress = f"({index}/{len(match_links)})"
         get_demo(link, progress, folder_path)
@@ -25,39 +27,57 @@ def main():
     print("*** All demos have been downloaded successfully ***")
 
 
-def get_matches(player_page, folder_path):
+def get_matches(stat_page_link, folder_path):
     print("Fetching match pages...")
-
     driver = firefox_driver(folder_path)
+    driver.get(stat_page_link)
 
-    driver.get(player_page)
-    time.sleep(3)
-
+    # Click the cookies pop-up
+    cookies = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "CybotCookiebotDialogBodyButtonDecline")))
+    cookies.click()
 
     match_links = []
+    is_last_page = False
+    while is_last_page == False:
 
-    elements2 = driver.find_elements(By.CSS_SELECTOR, ".group-2.first")
-    elements1 = driver.find_elements(By.CSS_SELECTOR, ".group-1.first")
+        # Find matches with the dark background in this page
+        elements2 = driver.find_elements(By.CSS_SELECTOR, ".group-2.first")
+        
+        # Find matches with a grey background in this page
+        elements1 = driver.find_elements(By.CSS_SELECTOR, ".group-1.first")
 
-    for i in range(min(len(elements2), len(elements1))):
-        link2 = elements2[i].find_element(By.TAG_NAME, "a").get_attribute("href")
-        match_links.append(link2.split('?')[0])
+        # Add all matches to the array from top to botttom
+        for i in range(min(len(elements2), len(elements1))):
+            link2 = elements2[i].find_element(By.TAG_NAME, "a").get_attribute("href")
+            match_links.append(link2.split('?')[0])
 
-        link1 = elements1[i].find_element(By.TAG_NAME, "a").get_attribute("href")
-        match_links.append(link1.split('?')[0])
+            link1 = elements1[i].find_element(By.TAG_NAME, "a").get_attribute("href")
+            match_links.append(link1.split('?')[0])
+        
+        if len(elements2) > len(elements1):
+            link2 = elements2[len(elements2) - 1].find_element(By.TAG_NAME, "a").get_attribute("href")
+            match_links.append(link2.split('?')[0])
 
-
+        # Go to the next page if there are more matches left
+        try: 
+            next_page = driver.find_element(By.CSS_SELECTOR, ".pagination-next")
+            if next_page.get_attribute("href"):
+                next_page.click()
+            else:
+                is_last_page = True
+        except:
+            is_last_page = True
+    
     for link in match_links:
         print(link)
-
+    print(f"Found {len(match_links)} demos.")
+    
     driver.quit()
     return match_links
 
 
 def get_demo(match_page, progress_number, folder_path):
-
     driver = firefox_driver(folder_path)
-
     driver.get(match_page)
 
     try:
@@ -106,17 +126,10 @@ def is_downloading(folder_path):
     return False
 
 
-def next_page(match_page, folder_path):
-    driver = firefox_driver(folder_path)
-    driver.get(match_page)
-    
-    cookies = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "CybotCookiebotDialogBodyButtonDecline")))
-    cookies.click()
-
-    next_page = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, "pagination-next ")))
-    next_page.click()
+def is_valid_url(url):
+    parsed = urlparse(url)
+    return all([parsed.scheme, parsed.netloc]) and "stats" in url
 
 
 if __name__  == "__main__":
 	main()
-
