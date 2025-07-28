@@ -10,7 +10,7 @@ from pathlib import Path
 
 def main():
     print("*** HLTV DEMO DOWNLOADER ***")
-    stat_page_link = "https://www.hltv.org/stats/players/matches/19763/boros" #input("Enter the stats page link: ")
+    stat_page_link = input("Enter the stats page link: ")
     folder_input = input("Enter the download folder path: ").strip()
 
     if not folder_input:
@@ -31,8 +31,7 @@ def main():
         quit()
 
     total_links = len(match_links)
-    match_links2 = match_links[0:2]      #limitadora 2 links     
-    for index, link in enumerate(match_links2, start=1): 
+    for index, link in enumerate(match_links, start=1): 
         progress = f"({index}/{total_links})"
         try:
             get_demo(link, progress, folder_path)
@@ -84,7 +83,7 @@ def get_matches(stat_page_link, folder_path):
 
         # Go to the next page if there are more matches left
         try: 
-            is_last_page = True # LIMITADOR DE PAGINAS
+            
             next_page = driver.find_element(By.CSS_SELECTOR, ".pagination-next")
             if next_page.get_attribute("href"):
                 next_page.click()
@@ -164,7 +163,7 @@ def firefox_driver(folder_path):
     options.set_preference("browser.download.manager.showAlertOnComplete", False)
     options.set_preference("browser.download.manager.focusWhenStarting", False)    
     
-    #options.add_argument("-headless")
+    options.add_argument("-headless")
     options.set_preference("browser.download.folderList", 2) 
     options.set_preference("browser.download.dir", folder_path)
     options.set_preference("browser.helperApps.neverAsk.saveToDisk", "application/x-rar-compressed") 
