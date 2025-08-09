@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HLTV Demo Downloader</title>
+  
+  <!-- Import a clean, readable font -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap"
+    rel="stylesheet"
+  />
+
+  <style>
+    /* Global reset & body background */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: linear-gradient(135deg, #2d3844 0%, #2b6ea4 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #333;
+      padding: 5px;
+    }
+
+    /* Container to hold heading and table */
+    .container {
+      background: #ffffffdd;
+      padding: 30px 40px;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+      max-width: 1000px;
+      width: 100%;
+    }
+
+    /* Heading Styling */
+    h2 {
+      text-align: center;
+      margin-bottom: 24px;
+      font-weight: 500;
+      color: #000000;
+    }
+
+    /* Table Styling */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      overflow: hidden;
+      border-radius: 8px;
+    }
+
+    th, td {
+      padding: 12px 15px;
+      text-align: center;
+    }
+
+    th {
+      background: #f0f8ff;
+      color: #004a9f;
+      font-weight: 500;
+    }
+
+    tbody tr {
+      background: #fff;
+      transition: background 0.3s ease;
+    }
+
+    tbody tr:nth-child(even) {
+      background: #f9f9f9;
+    }
+
+    tbody tr:hover {
+      background: #e6f7ff;
+    }
+
+    /* Status Dot & Label */
+    .status {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-weight: 500;
+      text-transform: capitalize;
+      color: #555;
+    }
+
+    .status-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .pending    { background: #999; }
+    .downloading{ background: #007bff; }
+    .completed  { background: #28a745; }
+    .failed {background: #ff0000;}
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h2>Download Status</h2>
+    <table id="myTable">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>File</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in table %}
+        <tr>
+          <td>{{ loop.index }}</td>
+          <td>{{ item.link }}</td>
+          <td class="status">
+            <span class="status-dot {{ item.status }}"></span>
+            {{ item.status }}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+<p></p>
+
+
+<!-- Centered Bottom Button -->
+<div style="
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+">
+  <button onclick="window.location.href='/stop_task'" style="
+    padding: 12px 24px;
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  " onmouseover="this.style.backgroundColor='#b52a38'" onmouseout="this.style.backgroundColor='#dc3545'">
+    Stop Task & Go Home
+  </button>
+</div>
+
+
+
+  <script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script>
+  <script>
+    const socket = io();
+
+    // Poll for updates every second
+    setInterval(() => socket.emit('request_update'), 1000);
+
+    socket.on('update_element', data => {
+    const [rowIndex, newStatus] = Object.values(data);
+    const cell = document
+    .getElementById("myTable")
+    .rows[rowIndex]
+    .cells[2];
+
+    // Edit the cell with the new status and add the dot
+    cell.className = 'status'; 
+    cell.innerHTML = `<span class="status-dot ${newStatus.toLowerCase()}"></span>${newStatus}`;});
+  </script>
+  
+</body>
+</html>
