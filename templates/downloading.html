@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HLTV Demo Downloader</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+
+<body>
+    <div class="container">
+        <h2>Download Status</h2>
+        <table id="myTable">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>File</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in table %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ item.link }}</td>
+                    <td class="status">
+                        <span class="status-dot {{ item.status }}"></span> {{ item.status }}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <p></p>
+
+    <div id=cancelButton>
+        <button onclick="window.location.href='/stop_task'" onmouseover="this.style.backgroundColor='#b52a38'" onmouseout="this.style.backgroundColor='#dc3545'">
+          Stop Downloading & Go Back
+        </button>
+    </div>
+
+    <script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script>
+    <script src="{{ url_for('static', filename='js/updateTable.js') }}"></script>
+
+</body>
+
+</html>
