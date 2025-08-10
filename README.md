@@ -7,14 +7,6 @@ Pages that contain "result" in the url, for example [this team page](https://www
 
 You can use a user interface ran locally: 
 
-![Screenshot1](static/img/screenshots/gui_screenshot3.png)
-![Screenshot1](static/img/screenshots/gui_screenshot2.png)
-
-
-There is also a simple CLI interface:
-
-![Screenshot1](static/img/screenshots/cli_screenshot1.png)
-
 
 ## Pre-requisites
 
