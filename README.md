@@ -15,6 +15,9 @@ There is also a simple CLI interface:
 
 ![Screenshot1](static/img/screenshots/screenshot1.png)
 
+
+The demos will be downloaded to a folder called "download" in the current path.
+
 ## Pre-requisites
 
 Install [Firefox](https://www.firefox.com/en-US/thanks/) or any other Firefox fork
