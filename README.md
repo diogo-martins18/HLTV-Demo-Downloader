@@ -36,8 +36,6 @@ pip install -r requirements.txt
 ```
 python3 GUI_HLTV_Demo_Downloader.py
 ```
-Open any browser and go to: http://127.0.0.1:5000
-
 
 
 ### CLI version:
