@@ -9,6 +9,7 @@ from urllib.parse import urlparse
 from threading import Thread
 from collections import deque
 from pathlib import Path
+import webbrowser
 import time
 import os
 
@@ -22,6 +23,7 @@ keep_downloading = True
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "secret!"
 socketio = SocketIO(app)
+webbrowser.open("http://127.0.0.1:5000")
 
 
 @app.route("/", methods=["GET", "POST"])
