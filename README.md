@@ -1,4 +1,7 @@
 # **HLTV Demo Downloader**
+
+!!! Stopped working because of Cloudflare captchas, might try to fix in the future !!!
+
 Tool that downloads HLTV demos in bulk.
 
 It only works with pages that have "stats" and "matches" in the url, for example [this player page](https://www.hltv.org/stats/players/matches/11816/ropz) or [this team page](https://www.hltv.org/stats/teams/matches/9565/vitality).
